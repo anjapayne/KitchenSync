@@ -9,11 +9,11 @@ Experiment Setup
 
 Kitchen Sync uses a common signal recorded as sound (by the camcorder) and by voltage (by the data acquisition system) to generate a sample-to-frame index. Therefor, a signal must be generated, and recorded on moth systems simultaneously. 
 
-Included in supplementary/Arduiono is Sync_Pulser, an Arduino Sketch who generates an audible structured, but random “tone” on an analog output pinof an Arduino controller. For more information on uploading Arduino programs, visit `Arduino.cc : first sketch <http://arduino.cc/en/Tutorial/Sketch/>`_.
+Included in supplementary/Arduiono is Sync_Pulser, an Arduino Sketch who generates an audible structured, but random “tone” on an analog output pinof an Arduino controller. For more information on uploading Arduino programs, visit [Arduino.cc : first sketch.](http://arduino.cc/en/Tutorial/Sketch/)
 
 Sync_Pulser will generate a synchrony signal on analog pin5 of your Arduino Micro-controller. This pin must be attached to both an auxiliary input on you at acquisition system, and the “Tip” and “Ring” of the audio input of the camcorder, via an modified microphone cable.  If possible, the auxiliary input, the sleeve of the microphone jack, and the Arduino should all share a common ground. See below of an example wiring diagram using an intan RHD200 evaluation board.
 
-.. image::supplementary/Arduino/Arduino_Wiring_Diagram.tiff
+![Wiring Diagram][supplementary/Arduino/Arduino_Wiring_Diagram.tiff]
 
 **During the experiment, be sure that you are recording from the axillary input channel, and the microphone input of the camcorder.**
 
@@ -27,7 +27,7 @@ Running Kitchen Sync
 
 Kitchen Sync can be ran from the directory containing KitchenSync.zip. The simplest way to run this program, assuming the video and auxiliary input data files share the same base filename (e.g. “trial1_exploration.MP4”,  “trial1_exploration.dat”) is like so: 
 
-$ python KitchenSync.zip -b  trial1_exploration -sr 20000
+'$ python KitchenSync.zip -b  trial1_exploration -sr 20000'
 
 where -sr 20000 denotes the sampling frequency of data acquisition. 
 This will generate two files,  trial1_exploration.index.npy and  trial1_exploration.index.txt.
@@ -57,7 +57,7 @@ Optional Arguments
 This command uses  trial1.mp4 and  analog0.npy to generate trial1_video_index.npy and  trial1_video_index.txt. The delay between initializing data acquisition and video was assumed to be about 120 seconds, give or take 60 seconds. 
 
 Example:
-$ python KitchenSync.zip -v trial1.mp4 -d analog0.npy -sr 15000 -guess 120 -conf 60 -o trial1_video_index
+'$ python KitchenSync.zip -v trial1.mp4 -d analog0.npy -sr 15000 -guess 120 -conf 60 -o trial1_video_index'
 
 This command uses  trial1.mp4 and  analog0.npy to generate trial1_video_index.npy and  trial1_video_index.txt. The delay between initializing data acquisition and video was assumed to be about 120 seconds, give or take 60 seconds. 
 
@@ -66,8 +66,8 @@ Usage of Generated Index
 
 The generated index file can be used to align samples along the timescale of a video file. Imaging “computer_vision” is a python module that can determine the linear position of an animal in a simple maze, and load in these positions as an array of values. Also, image that “eegReader” is a module that can load in eeg data from an acquisition file as an array of values. The following python script would use “trial1.index.npy” to align the EEG data to the data extracted from a video file:
 
-::
 
+'''python
     #usr/bin/bash/python
 
     import computer_vision
@@ -92,6 +92,7 @@ The generated index file can be used to align samples along the timescale of a v
 
     #show the figure
     plt.show()
+'''
 
 A Note on Accuracy
 ------------------
