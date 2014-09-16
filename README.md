@@ -2,9 +2,6 @@
 Kitchen Sync
 ------------
 
-Introduction
-------------
-
 Kitchen Sync is a tool which takes advantage of a common signal recorded on both the audio track of a video file, and on an auxiliary input of a data acquisition system in order to generate a “sample to frame” index linking these two systems together. This allows data recorded on an electrphysiology data acquisition system to be synchronized with data recorded on a camcorder. 
 
 Experiment Setup
