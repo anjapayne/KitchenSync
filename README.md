@@ -67,7 +67,7 @@ Usage of Generated Index
 The generated index file can be used to align samples along the timescale of a video file. Imaging “computer_vision” is a python module that can determine the linear position of an animal in a simple maze, and load in these positions as an array of values. Also, image that “eegReader” is a module that can load in eeg data from an acquisition file as an array of values. The following python script would use “trial1.index.npy” to align the EEG data to the data extracted from a video file:
 
 
-'''python
+'''python    
     #usr/bin/bash/python
 
     import computer_vision
