@@ -31,6 +31,7 @@ class TemplateMatch():
         #everything less than the lower bound remains zero
         coeff_list = np.zeros(upper_bound)
 
+        #TODO: This is the bottleneck, there should be a more effeciant way to do this using NumPy
         for i in range(lower_bound,  upper_bound ):
 
             #find the r-value at this point
