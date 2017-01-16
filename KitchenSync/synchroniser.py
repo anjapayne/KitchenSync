@@ -4,6 +4,8 @@ from scipy.interpolate import interp1d
 
 #uses interpolation to downsample or upsample to a new sample rate
 def resample(array, old_sample_rate , new_sample_rate):
+    print('array size is')
+    print(array.size)
     interp = interp1d(np.arange(array.size), array)
     new_array_size = (float(array.size)/old_sample_rate) * new_sample_rate  
     new_array = np.linspace(0,array.size-1,new_array_size)
@@ -12,12 +14,14 @@ def resample(array, old_sample_rate , new_sample_rate):
 
 class Synchroniser():
     """
-    Uses the template match class to collect data for synronising data sets. 
+    Uses the template match class to collect data for synchronising data sets. 
     calculates the true sampling rate ratios between datasets, and an array of time lags.  
-    Combines these elements to create a 
     """
 
-    def __init__(self, audio_data, intan_data , video_frame_count, intan_sample_rate = 20000, audio_sample_rate = 48000,intan_lower_bound = None, intan_upper_bound = None, template_lower_bound = None  ):
+    def __init__(self, audio_data, intan_data , video_frame_count, intan_sample_rate = 20000, audio_sample_rate = 48000, intan_lower_bound = None, intan_upper_bound = None, template_lower_bound = None  ):
+        print('intan lower bound is')
+        print(intan_lower_bound)
+        
         self.frame_count = video_frame_count
         if template_lower_bound == None:
             self.template_lower_bound = audio_data.size / 2
@@ -31,19 +35,21 @@ class Synchroniser():
         self.intan_upper_bound =  intan_upper_bound
         self.template_lower_bound = template_lower_bound
 
-    #calculates the tru reltive sampling frequncy between the video and data aquisition
+    #calculates the true relative sampling frequncy between the video and data acquisition
     def calcFreq(self):
 
-        print "Calculating Relitive Sampling Fequencies"
+        print "Calculating Relative Sampling Frequencies"
 
         #create first template
         lower = self.template_lower_bound
         upper = self.template_lower_bound + self.template_size
         template = self.audio_data[lower:upper]
 
-        #downsample to the aproximate sample rate of the intan data
+        #downsample to the approximate sample rate of the intan data
+        print('downsampling to size of intan data')
         template = resample(template, self.audio_sample_rate, self.intan_sample_rate)
-
+        print('resampled size is:')
+        print (template.size)
         #find the position of the first template       
         tm = TemplateMatch(template, self.intan_data)
         time1 = tm.faster_find_template_match(self.intan_lower_bound, self.intan_upper_bound)
@@ -53,7 +59,7 @@ class Synchroniser():
         upper = lower + self.template_size
         template = self.audio_data[lower:upper]
 
-        #downsample to the aproximate sample rate of the intan data
+        print('downsampling again')
         template = resample(template, self.audio_sample_rate, self.intan_sample_rate)
         tm = TemplateMatch(template, self.intan_data)
 

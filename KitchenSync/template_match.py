@@ -2,8 +2,8 @@ import numpy as np
 
 class TemplateMatch():
     """
-    Used to find the best locaion of a template along a static data set
-    shifts a moving window along a static data set to maximise the pearson r-value
+    Used to find the best location of a template along a static data set
+    shifts a moving window along a static data set to maximize the pearson r-value
     between the window, and the template. 
     """
 
@@ -17,21 +17,21 @@ class TemplateMatch():
     #Returns the location of the beginning of template along the axis of the static data set
     def match_template_start(self, lower_bound = None, upper_bound = None, decimation = 1, template_decimation = 1):
 
-        #the highest possable template location
+        #the highest possible template location
         last_attempt = self.static_data.size - self.template.size
 
-        #set default upper and lowe bound values of none
+        #set default upper and lower bound values of none
         if upper_bound == None:
             upper_bound = last_attempt
         else:
             upper_bound = min(last_attempt, upper_bound)
         if lower_bound == None:
-            lower_bound = 0
-
+            lower_bound = 0 #problem occurring here....
+        
         #everything less than the lower bound remains zero
         coeff_list = np.zeros(upper_bound)
 
-        #TODO: This is the bottleneck, there should be a more effeciant way to do this using NumPy
+        #TODO: This is the bottleneck, there should be a more efficient way to do this using NumPy
         for i in range(lower_bound,  upper_bound ):
 
             #find the r-value at this point
@@ -56,7 +56,7 @@ class TemplateMatch():
     #speedy implementation of the above algorithm, using a 2-pass which downsamples the template and window on the first pass. 
     def faster_find_template_match(self, lower= None, upper=None):#i for itterations
         
-        print "First Pass"#decimate temlate and window by 400
+        print "First Pass"#decimate template and window by 400
         latest_match = self.match_template_start(lower, upper,1,400)
         
         print "Second Pass:"#limit to with 100 samples of the latest match, do not decimate

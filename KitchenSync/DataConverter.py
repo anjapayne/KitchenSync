@@ -3,22 +3,26 @@ import sys, os
 import numpy as np
 import scipy
 from scipy.io import wavfile as wv
+from scipy.io.wavfile import read 
 import struct
 import matplotlib.pyplot as plt
 
 #extracts .wav from .mp4 and returns the file path 
 def mp4_to_wav( mp4_path):
     output_path = os.path.splitext(mp4_path)[0] + ".wav"
-    os.system("ffmpeg -i %s %s"%(mp4_path,  output_path))
+    os.system("ffmpeg -i %s %s" % (mp4_path,  output_path))
+    print('made it through mp4_to_wav')
     return output_path
 
 #converts .wav file to .npy file
 def wav_to_npy(wav_path):
-    
+    print('wav_path is')
+    print(wav_path)
     output_path = wav_path + ".npy"
 
     f = open(wav_path, 'r')
-    wav = wv.read(f)[1]
+    a = read(wav_path) 
+    wav = np.array(a[1],dtype=float) 
     #mono
     wav = wav.mean(axis = 1)  
     np.save(output_path, wav)
@@ -30,7 +34,7 @@ def mp4_to_npy( mp4_path):
     wav_path = mp4_to_wav(mp4_path)
     numpy_path = wav_to_npy(wav_path)
     return numpy_path
-
+    
 #RDH, assumes ADC input, for syncrony
 def dat_to_npy( intan_path):
     output_path = intan_path + ".npy"
@@ -38,9 +42,9 @@ def dat_to_npy( intan_path):
     data_buffer = np.zeros(file_size / 2)
 
     with open(intan_path, 'r') as f:
-        
+        n = np.uint16(struct.unpack('H', f.read(2)))[0]   
+
         for i in range(len(data_buffer)):
-           n = np.uint16(struct.unpack('H', f.read(2)))[0]
            data_buffer[i] = n
 
     np.save(output_path, data_buffer)
