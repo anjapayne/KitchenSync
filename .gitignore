@@ -1,0 +1,9 @@
+.mp4
+.wav
+.npy
+.dat
+.txt
+.md
+
+ffmpeg/
+opencv/
