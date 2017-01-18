@@ -16,8 +16,7 @@ def mp4_to_wav( mp4_path):
 
 #converts .wav file to .npy file
 def wav_to_npy(wav_path):
-    print('wav_path is')
-    print(wav_path)
+    
     output_path = wav_path + ".npy"
 
     f = open(wav_path, 'r')

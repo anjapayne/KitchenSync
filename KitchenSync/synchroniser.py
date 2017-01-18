@@ -4,11 +4,12 @@ from scipy.interpolate import interp1d
 
 #uses interpolation to downsample or upsample to a new sample rate
 def resample(array, old_sample_rate , new_sample_rate):
-    print('array size is')
-    print(array.size)
-    interp = interp1d(np.arange(array.size), array)
+    
+    interp = interp1d(np.arange(array.size), array) #throws error "total size of array must be unchanged"
     new_array_size = (float(array.size)/old_sample_rate) * new_sample_rate  
     new_array = np.linspace(0,array.size-1,new_array_size)
+    print('new_array size is')
+    print(len(new_array))
     new_array = interp(new_array)
     return new_array
 
@@ -50,6 +51,7 @@ class Synchroniser():
         template = resample(template, self.audio_sample_rate, self.intan_sample_rate)
         print('resampled size is:')
         print (template.size)
+        
         #find the position of the first template       
         tm = TemplateMatch(template, self.intan_data)
         time1 = tm.faster_find_template_match(self.intan_lower_bound, self.intan_upper_bound)
@@ -60,7 +62,7 @@ class Synchroniser():
         template = self.audio_data[lower:upper]
 
         print('downsampling again')
-        template = resample(template, self.audio_sample_rate, self.intan_sample_rate)
+        template = resample(template, self.audio_sample_rate, self.intan_sample_rate) #this line throws error
         tm = TemplateMatch(template, self.intan_data)
 
         #find the position of the last template       
