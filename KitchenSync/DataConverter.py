@@ -34,15 +34,24 @@ def mp4_to_npy( mp4_path):
     numpy_path = wav_to_npy(wav_path)
     return numpy_path
     
-#RDH, assumes ADC input, for syncrony
+#RDH, assumes ADC input, for synchrony
 def dat_to_npy( intan_path):
     output_path = intan_path + ".npy"
     file_size = os.path.getsize(intan_path)
     data_buffer = np.zeros(file_size / 2)
 
+    #intan_path_size = sys.getsizeof(intan_path)
+    #num_channels = 8
+    #num_samples = intan_path_size/(num_channels * 2) #int16 = 2 bytes
+    #start_index = num_samples * 7 
+    #end_index = intan_path_size
+    
     with open(intan_path, 'r') as f:
-        n = np.uint16(struct.unpack('H', f.read(2)))[0]   
-
+    #with open(intan_path, 'r') as fin: #added by AP 1.18.17
+        #fin.seek(start_index) #added by AP 1.18.17
+        n = np.uint16(struct.unpack('H', f.read(2)))[0]
+        #n = np.uint16(struct.unpack('H', fin.read(2)))[0] #added by AP 1.18.17
+        plt.plot(n)
         for i in range(len(data_buffer)):
            data_buffer[i] = n
 
