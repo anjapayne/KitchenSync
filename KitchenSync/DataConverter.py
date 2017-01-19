@@ -49,13 +49,24 @@ def dat_to_npy( intan_path):
     with open(intan_path, 'r') as f:
     #with open(intan_path, 'r') as fin: #added by AP 1.18.17
         #fin.seek(start_index) #added by AP 1.18.17
-        n = np.uint16(struct.unpack('H', f.read(2)))[0]
+        #n = np.uint16(struct.unpack('H', f.read(2)))[0]
         #n = np.uint16(struct.unpack('H', fin.read(2)))[0] #added by AP 1.18.17
-        plt.plot(n)
-        for i in range(len(data_buffer)):
-           data_buffer[i] = n
+        #n = struct.unpack('H', f.read(2))   
+        #d = np.array(n)
+        #print('length of d is')
+        #print(len(d))
+        
+        n = np.fromfile(f, dtype='uint16')
+        print('size of n is')
+        print(len(n))
+        
+        #for i in range(len(data_buffer)):
+        #   data_buffer[i] = n
+        #print('length of buffer is')
+        #print(len(data_buffer))
+    #np.save(output_path, data_buffer)
+    np.save(output_path, n)
 
-    np.save(output_path, data_buffer)
     return output_path
 
 #takes file path input, converts files down the line based in given file extension
