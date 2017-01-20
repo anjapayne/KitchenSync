@@ -36,15 +36,20 @@ class Synchroniser():
         self.intan_upper_bound =  intan_upper_bound
         self.template_lower_bound = template_lower_bound
 
-    #calculates the true relative sampling frequncy between the video and data acquisition
+    #calculates the true relative sampling frequency between the video and data acquisition
     def calcFreq(self):
 
         print "Calculating Relative Sampling Frequencies"
-
+        print('size of audio is')
+        print(len(self.audio_data))
         #create first template
         lower = self.template_lower_bound
         upper = self.template_lower_bound + self.template_size
         template = self.audio_data[lower:upper]
+        print('lower bound is')
+        print(lower)
+        print('upper bound is')
+        print(upper)
 
         #downsample to the approximate sample rate of the intan data
         print('downsampling to size of intan data')
@@ -58,8 +63,14 @@ class Synchroniser():
 
         #find last template, 3 template sizes later
         lower += self.template_size * 3
+        print('lower bound is')
+        print(lower)
         upper = lower + self.template_size
+        print('upper bound is')
+        print(upper)
         template = self.audio_data[lower:upper]
+        print('second sampled size is')
+        print(template.size)
 
         print('downsampling again')
         template = resample(template, self.audio_sample_rate, self.intan_sample_rate) #this line throws error
