@@ -7,6 +7,8 @@ from synchroniser import Synchroniser
 import argparse
 import os.path
 import wave
+from imutils.convenience import is_cv3
+import cv2
 
 def main(audio_data, 
         science_data, 
@@ -35,15 +37,19 @@ def main(audio_data,
         frame_count,  
         sample_rate, 
         audio_sample_rate , 
-        0,
+        0, #AP added - I think this may be causing errors? 
         #int(center_point - (accuracy * sample_rate)),  Commented out 1.16.17 by AP due to errors being thrown
         int(center_point + (accuracy * sample_rate)), 
         int(template_lower_bound))
 
+    reshift = sample_rate * interval
+    print('reshift value is')
+    print(reshift)
+    
     return syncer.BuildSyncIndex(reshift_interval = sample_rate * interval)
 
 #counts the frames of a video file, or uses the optional -vf argument
-def FrameCount():
+def FrameCount(): #I believe this isn't happening, I think it's producing 0. 
 
     if args['vf']:
         return int(args['vf'])
@@ -61,12 +67,76 @@ or use the -vf argument to specify the total frame count of your video file.
 
     if args['v']:
         path_to_video = args['v']
+
+        # grab a pointer to the video file and initialize the total
+        # number of frames read
+        video = cv2.VideoCapture(path_to_video)
+        total = 0
+ 
+        # lets try to determine the number of frames in a video
+        # via video properties; this method can be very buggy
+        # and might throw an error based on your OpenCV version
+        # or may fail entirely based on your which video codecs
+        # you have installed
+        try:
+            # check if we are using OpenCV 3
+            if is_cv3():
+                total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+ 
+            # otherwise, we are using OpenCV 2.4
+            else:
+                total = int(video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+ 
+        # uh-oh, we got an error -- revert to counting manually
+        except:
+            total = count_frames_manual(video)
+ 
+        # release the video file pointer
+        video.release()
+ 
+        # return the total number of frames in the video
+        return total
+        
+        '''
+        # Below added by AP:
+        # import the necessary packages
+        from imutils.video import count_frames
+        import argparse
+        import os
+        
+        # construct the argument parse and parse the arguments
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-v", "--video", required=True,
+                        help="path to input video file")
+        ap.add_argument("-o", "--override", type=int, default=-1,
+                        help="whether to force manual frame count")
+        args = vars(ap.parse_args())
+        
+        # count the total number of frames in the video file
+        #override = False if args["override"] < 0 else True
+        total = count_frames()
+        
+        # display the frame count to the terminal
+        print("[INFO] {:,} total frames read from {}".format(total,
+              args["video"][args["video"].rfind(os.path.sep) + 1:]))
+        
+        return total
+        
+
         #used to count video frames in file 
         import cv2
         #get frame count
         cap =  cv2.VideoCapture(path_to_video)
-        return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-
+        print('whats the path?')
+        print(cap)
+        halp = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
+        print('whats frame count yield?')
+        print(halp)
+        length = int(halp)
+        print('whats the frame count')
+        print(length)
+        return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) #this function in cv2 yields 0 
+        '''
     if args['b']:
         path_to_video = args['b'] + ".mp4"
         #used to count video frames in file 
@@ -78,6 +148,27 @@ or use the -vf argument to specify the total frame count of your video file.
     parser.epilog = "No video file specified."
     parser.print_help()
     exit()  
+    
+# below def added by AP 1.26.2017
+def count_frames_manual(video):
+	# initialize the total number of frames read
+	total = 0
+ 
+	# loop over the frames of the video
+	while True:
+		# grab the current frame
+		(grabbed, frame) = video.read()
+	 
+		# check to see if we have reached the end of the
+		# video
+		if not grabbed:
+			break
+ 
+		# increment the total number of frames read
+		total += 1
+ 
+	# return the total number of frames in the video file
+	return total
 
 #finds the audio data, based upon the given parameters, and returns it as a numpy array
 def audio():
@@ -176,6 +267,10 @@ Default: 0 seconds.
     aud = audio()#load audio array
     dat = dataAq()#load 
     fc = FrameCount()#video frames
+    
+    print('frame count is')    
+    print(fc)
+
     afr = aud_SR()#audio frame rate
     if not args['sr']:
         parser.print_help()
@@ -186,6 +281,7 @@ Default: 0 seconds.
     conf = int(args['conf'])
     n = int(args['si']) #recalulation interval
 
+    '''
     vIndex =  main(aud, 
                     dat, 
                     fc, 
@@ -194,7 +290,7 @@ Default: 0 seconds.
                     guess, 
                     conf, 
                     n)
-
+    '''
     base = OutFilePath()
     print "Saving " + base + ".index.npy"
     np.save(base + ".index.npy" , vIndex)
@@ -206,7 +302,7 @@ Default: 0 seconds.
         aud_ind = np.linspace(0, fc, num = aud.size)
         print "Plotting Audio Trace"
         plt.plot(aud_ind[0::100], aud[0::100] / np.max(aud), label='Audio Track (downsampled)')
-        print "Plottng Synchronised Analog Data"
+        print "Plotting Synchronised Analog Data"
         plt.plot(vIndex[0::100], dat[0:: 100] / np.max(dat), label='Synchronised Analog Data (downsampled)')
         plt.xlim([fc / 2 , fc / 2 + 600])
         plt.ylim([-1.25, 1.25])

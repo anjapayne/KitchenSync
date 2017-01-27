@@ -88,19 +88,35 @@ class Synchroniser():
         #video frames per sample
         self.video_fps = (float(self.video_frame_count) / self.audio_data.size) * self.audio_fps
 
+        print('audio fps is')
+        print(self.audio_fps)
+        print('video frame count is')
+        print(self.video_frame_count) #AH! Yields 0!
+        print('size of audio data is')
+        print(self.audio_data.size)
+
         #audio to intan offset, used for future calculations
         self.offset = (self.template_lower_bound  * self.audio_fps**-1) - time1
+
+        print "template lower bound is:" #temp, delete
+        print(lower) #temp, delete
 
         print "Video to Data Offset: ~" +  '%.2f' % (self.offset / self.intan_sample_rate) + " seconds"
         print "Framerate: ~" +  '%.2f' % (self.video_fps * self.intan_sample_rate) + " FPS"
 
+        print('fps is yielding ... ') #temp, delete
+        print(self.video_fps)   #temp, delete
     #offset calculated every n samples 
     def offset_list(self, n):
 
+        print('what is n? n is:')
+        print(n)
         print "downsampling audio to match data"
         self.downsampled_audio = resample(self.audio_data, self.audio_fps, 1)
 
-        index_list = np.arange(0, self.intan_data.size, n)
+        index_list = np.arange(0, self.intan_data.size, n) #array from 0 to intan data size in increments of n
+        print('index list is (delete when done!)')        
+        print(index_list)
         offset_list = [self.offset_at_sample(i) for i in index_list]
 
         # interpolate over the NaN data
@@ -113,7 +129,7 @@ class Synchroniser():
         return np.repeat(offset_list, n)[:self.intan_data.size]
 
     #finds offset at intan sample n, based on the re-sampled audio data
-    def offset_at_sample(self, n):   
+    def offset_at_sample(self, n): #tracked down error to somewhere in this function   
 
         template_size = 30 * self.intan_sample_rate #using 30 second templates
 
@@ -129,7 +145,7 @@ class Synchroniser():
 
         print "Calculating offset at sample " + str(n) + " of " +  str(static_data.size)
 
-        #return null if there is inseficint data
+        #return null if there is insufficient data
         lower_bound = approx_start - max_error
         #No data to compair to at this point,
         if lower_bound < 0:
@@ -151,13 +167,19 @@ class Synchroniser():
         #run calculate_index to get initial offset and sample rate ratios
         self.calcFreq()
 
-        #liner spaced index
+        #linear spaced index
         index = np.arange(0, self.intan_data.size)
+       
         #add offset list 
-        offsets = self.offset_list(reshift_interval)
+        offsets = self.offset_list(reshift_interval) #currently yielding array of 0's
 
         index = np.subtract(index, offsets)
-        #multiply by video sampling rate relitive to intan sampling rate
+        #multiply by video sampling rate relative to intan sampling rate
         index = np.multiply(index, self.video_fps)
 
-        return index
+        fps = self.video_fps;
+        print('size of fps is')
+        print(fps)
+        
+        #return index
+        return offsets
