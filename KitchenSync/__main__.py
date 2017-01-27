@@ -68,63 +68,9 @@ or use the -vf argument to specify the total frame count of your video file.
     if args['v']:
         path_to_video = args['v']
 
-        # grab a pointer to the video file and initialize the total
-        # number of frames read
-        video = cv2.VideoCapture(path_to_video)
-        total = 0
- 
-        # lets try to determine the number of frames in a video
-        # via video properties; this method can be very buggy
-        # and might throw an error based on your OpenCV version
-        # or may fail entirely based on your which video codecs
-        # you have installed
-        try:
-            # check if we are using OpenCV 3
-            if is_cv3():
-                total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
- 
-            # otherwise, we are using OpenCV 2.4
-            else:
-                total = int(video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
- 
-        # uh-oh, we got an error -- revert to counting manually
-        except:
-            total = count_frames_manual(video)
- 
-        # release the video file pointer
-        video.release()
- 
-        # return the total number of frames in the video
-        return total
-        
-        '''
-        # Below added by AP:
-        # import the necessary packages
-        from imutils.video import count_frames
-        import argparse
-        import os
-        
-        # construct the argument parse and parse the arguments
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-v", "--video", required=True,
-                        help="path to input video file")
-        ap.add_argument("-o", "--override", type=int, default=-1,
-                        help="whether to force manual frame count")
-        args = vars(ap.parse_args())
-        
-        # count the total number of frames in the video file
-        #override = False if args["override"] < 0 else True
-        total = count_frames()
-        
-        # display the frame count to the terminal
-        print("[INFO] {:,} total frames read from {}".format(total,
-              args["video"][args["video"].rfind(os.path.sep) + 1:]))
-        
-        return total
-        
-
         #used to count video frames in file 
         import cv2
+        
         #get frame count
         cap =  cv2.VideoCapture(path_to_video)
         print('whats the path?')
@@ -136,7 +82,7 @@ or use the -vf argument to specify the total frame count of your video file.
         print('whats the frame count')
         print(length)
         return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) #this function in cv2 yields 0 
-        '''
+        
     if args['b']:
         path_to_video = args['b'] + ".mp4"
         #used to count video frames in file 
