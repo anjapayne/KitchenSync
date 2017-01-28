@@ -181,5 +181,5 @@ class Synchroniser():
         print('size of fps is')
         print(fps)
         
-        #return index
-        return offsets
+        return index
+

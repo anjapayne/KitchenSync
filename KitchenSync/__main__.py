@@ -7,8 +7,6 @@ from synchroniser import Synchroniser
 import argparse
 import os.path
 import wave
-from imutils.convenience import is_cv3
-import cv2
 
 def main(audio_data, 
         science_data, 
@@ -66,6 +64,9 @@ or use the -vf argument to specify the total frame count of your video file.
         exit()
 
     if args['v']:
+        #####################  This code needs to be replaced
+        #####################  Will instead use ffprobe. 
+        
         path_to_video = args['v']
 
         #used to count video frames in file 
@@ -81,8 +82,9 @@ or use the -vf argument to specify the total frame count of your video file.
         length = int(halp)
         print('whats the frame count')
         print(length)
-        return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) #this function in cv2 yields 0 
-        
+        #return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) #this function in cv2 yields 0 
+        return 11204        
+
     if args['b']:
         path_to_video = args['b'] + ".mp4"
         #used to count video frames in file 
@@ -94,27 +96,6 @@ or use the -vf argument to specify the total frame count of your video file.
     parser.epilog = "No video file specified."
     parser.print_help()
     exit()  
-    
-# below def added by AP 1.26.2017
-def count_frames_manual(video):
-	# initialize the total number of frames read
-	total = 0
- 
-	# loop over the frames of the video
-	while True:
-		# grab the current frame
-		(grabbed, frame) = video.read()
-	 
-		# check to see if we have reached the end of the
-		# video
-		if not grabbed:
-			break
- 
-		# increment the total number of frames read
-		total += 1
- 
-	# return the total number of frames in the video file
-	return total
 
 #finds the audio data, based upon the given parameters, and returns it as a numpy array
 def audio():
@@ -227,7 +208,6 @@ Default: 0 seconds.
     conf = int(args['conf'])
     n = int(args['si']) #recalulation interval
 
-    '''
     vIndex =  main(aud, 
                     dat, 
                     fc, 
@@ -236,20 +216,25 @@ Default: 0 seconds.
                     guess, 
                     conf, 
                     n)
-    '''
+    
+    aud_ind = np.linspace(0, fc, num = aud.size)
+    
     base = OutFilePath()
     print "Saving " + base + ".index.npy"
     np.save(base + ".index.npy" , vIndex)
     print "Saving " + base + ".index.txt"
     np.savetxt(base + ".index.txt" , vIndex)
+    print "Saving " + base + ".audio.txt"
+    np.savetxt(base + ".audio.txt" , aud)
+    print "Saving " + base + ".audio.index.txt"
+    np.savetxt(base + ".audio.index.txt" , aud_ind)
 
     if args['test']:
         import matplotlib.pyplot as plt
-        aud_ind = np.linspace(0, fc, num = aud.size)
         print "Plotting Audio Trace"
         plt.plot(aud_ind[0::100], aud[0::100] / np.max(aud), label='Audio Track (downsampled)')
         print "Plotting Synchronised Analog Data"
-        plt.plot(vIndex[0::100], dat[0:: 100] / np.max(dat), label='Synchronised Analog Data (downsampled)')
+        plt.plot(vIndex[0::100], dat[0::100] / np.max(dat), label='Synchronised Analog Data (downsampled)')
         plt.xlim([fc / 2 , fc / 2 + 600])
         plt.ylim([-1.25, 1.25])
         plt.legend()
