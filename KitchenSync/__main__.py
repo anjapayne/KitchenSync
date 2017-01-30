@@ -69,21 +69,14 @@ or use the -vf argument to specify the total frame count of your video file.
         
         path_to_video = args['v']
 
-        #used to count video frames in file 
-        import cv2
+        import subprocess as sub
         
-        #get frame count
-        cap =  cv2.VideoCapture(path_to_video)
-        print('whats the path?')
-        print(cap)
-        halp = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-        print('whats frame count yield?')
-        print(halp)
-        length = int(halp)
-        print('whats the frame count')
-        print(length)
-        #return cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) #this function in cv2 yields 0 
-        return 11204        
+        command = "ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 " + path_to_video
+        fc = sub.check_output(command, shell=True)
+        
+        rate = int(fc)
+
+        return rate   
 
     if args['b']:
         path_to_video = args['b'] + ".mp4"
