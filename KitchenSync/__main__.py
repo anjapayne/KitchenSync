@@ -213,14 +213,18 @@ Default: 0 seconds.
     aud_ind = np.linspace(0, fc, num = aud.size)
     
     base = OutFilePath()
-    print "Saving " + base + ".index.npy"
-    np.save(base + ".index.npy" , vIndex)
-    print "Saving " + base + ".index.txt"
-    np.savetxt(base + ".index.txt" , vIndex)
+    print "Saving " + base + ".index.npy and .index.txt"
+    np.save(base + ".index.npy" , vIndex[0::100])
+    np.savetxt(base + ".index.txt" , vIndex[0::100])
+    
     print "Saving " + base + ".audio.txt"
-    np.savetxt(base + ".audio.txt" , aud)
+    np.savetxt(base + ".audio.txt" , aud[0::100] / np.max(aud))
+    
     print "Saving " + base + ".audio.index.txt"
-    np.savetxt(base + ".audio.index.txt" , aud_ind)
+    np.savetxt(base + ".audio.index.txt" , aud_ind[0::100])
+    
+    print "Saving " + base + ".data.txt"
+    np.savetxt(base + ".data.txt" , dat[0::100] / np.max(dat))    
 
     if args['test']:
         import matplotlib.pyplot as plt

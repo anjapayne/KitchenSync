@@ -36,6 +36,10 @@ def mp4_to_npy( mp4_path):
     
 #RDH, assumes ADC input, for synchrony
 def dat_to_npy( intan_path):
+    #TODO: Incorporate a means of determining whether the Intan analog data is 
+    #more than one channel. If it is, choose the last channel and use that.
+    
+    
     output_path = intan_path + ".npy"
     file_size = os.path.getsize(intan_path)
     data_buffer = np.zeros(file_size / 2)
