@@ -165,6 +165,7 @@ Uses a template matching method to construct a sample-to-frame index based upon 
                                     """)
 
 if __name__ == "__main__":
+       
     parser.add_argument('-b', help='Base path of audio, video, and analog data files. Use  if these files share the same base file name.')
     parser.add_argument('-v', help='Path to the .mp4 video file')
     parser.add_argument('-a', help='Path to the .wav or .npy audio data file')
@@ -199,7 +200,7 @@ Default: 0 seconds.
     
     guess = int(args['guess'])
     conf = int(args['conf'])
-    n = int(args['si']) #recalulation interval
+    n = int(args['si']) #recalculation interval
 
     vIndex =  main(aud, 
                     dat, 

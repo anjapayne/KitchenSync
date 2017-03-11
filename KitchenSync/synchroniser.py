@@ -6,10 +6,14 @@ from scipy.interpolate import interp1d
 def resample(array, old_sample_rate , new_sample_rate):
     
     interp = interp1d(np.arange(array.size), array) #throws error "total size of array must be unchanged"
-    new_array_size = (float(array.size)/old_sample_rate) * new_sample_rate  
-    new_array = np.linspace(0,array.size-1,new_array_size)
+    print('array size is')
+    print(array.size)
+    print(old_sample_rate)
+    print(new_sample_rate)
+    new_array_size = abs((float(array.size)/old_sample_rate) * new_sample_rate)
     print('new_array size is')
-    print(len(new_array))
+    print(new_array_size)
+    new_array = np.linspace(0,array.size-1,new_array_size)
     new_array = interp(new_array)
     return new_array
 
@@ -129,7 +133,7 @@ class Synchroniser():
         return np.repeat(offset_list, n)[:self.intan_data.size]
 
     #finds offset at intan sample n, based on the re-sampled audio data
-    def offset_at_sample(self, n): #tracked down error to somewhere in this function   
+    def offset_at_sample(self, n): 
 
         template_size = 30 * self.intan_sample_rate #using 30 second templates
 
@@ -140,7 +144,7 @@ class Synchroniser():
 
         #data subsample becomes template
         template = self.intan_data[n :n + template_size]
-        #audio downsampeled to match template, using calculated framerate ratio
+        #audio downsampled to match template, using calculated framerate ratio
         static_data = self.downsampled_audio
 
         print "Calculating offset at sample " + str(n) + " of " +  str(static_data.size)
