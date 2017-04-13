@@ -120,6 +120,11 @@ class Synchroniser():
         # Calculate the offset between the audio track and the Intan data. 
         self.offset = (self.template_lower_bound  * self.audio_fps**-1) - time1
 
+        # Anja temp for debugging:
+        test_offset = self.template_lower_bound / self.audio_fps
+        print('testing for offset yields a lower template of ...')
+        print(test_offset)
+
         print "template lower bound is:" #temp, delete
         print(lower) #temp, delete
 

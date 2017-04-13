@@ -43,7 +43,7 @@ class TemplateMatch():
                   
         #return the argument of maximum correlation
         best_match = np.argmax(coeff_list)
-        print "Best R: " + str(coeff_list[best_match])
+        print "Best R: " + str(coeff_list[best_match]) + "found at " + str(best_match)
         return best_match
 
     #retuns r-value between template and window beginning at start, decimates or returns 0 if approprate
@@ -54,12 +54,13 @@ class TemplateMatch():
             return 0
 
     #speedy implementation of the above algorithm, using a 2-pass which downsamples the template and window on the first pass. 
-    def faster_find_template_match(self, lower= None, upper=None):#i for itterations
+    def faster_find_template_match(self, lower= None, upper=None):#i for iterations
         
         print "First Pass"#decimate template and window by 400
-        latest_match = self.match_template_start(lower, upper,1,400)
+        first_pass = self.match_template_start(lower, upper,1,400)
         
         print "Second Pass:"#limit to with 100 samples of the latest match, do not decimate
-        latest_match = self.match_template_start(latest_match - 100, latest_match +  100, 1, 1)
+        latest_match = self.match_template_start(first_pass - 100, first_pass +  100, 1, 1)
 
+        #return latest_match
         return latest_match
