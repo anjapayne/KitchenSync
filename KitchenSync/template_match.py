@@ -26,7 +26,7 @@ class TemplateMatch():
         else:
             upper_bound = min(last_attempt, upper_bound)
         if lower_bound == None:
-            lower_bound = 0 #problem occurring here....
+            lower_bound = 0 
         
         #everything less than the lower bound remains zero
         coeff_list = np.zeros(upper_bound)
@@ -43,7 +43,7 @@ class TemplateMatch():
                   
         #return the argument of maximum correlation
         best_match = np.argmax(coeff_list)
-        print "Best R: " + str(coeff_list[best_match]) + "found at " + str(best_match)
+        print "Best R: " + str(coeff_list[best_match]) + " found at " + str(best_match)
         return best_match
 
     #retuns r-value between template and window beginning at start, decimates or returns 0 if approprate
@@ -60,7 +60,7 @@ class TemplateMatch():
         first_pass = self.match_template_start(lower, upper,1,400)
         
         print "Second Pass:"#limit to with 100 samples of the latest match, do not decimate
-        latest_match = self.match_template_start(first_pass - 100, first_pass +  100, 1, 1)
+        latest_match = self.match_template_start(first_pass - 100, first_pass + 100, 1, 1)
 
         #return latest_match
         return latest_match

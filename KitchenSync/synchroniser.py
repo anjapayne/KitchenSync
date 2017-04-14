@@ -101,10 +101,14 @@ class Synchroniser():
         delta_intan = float(time2 - time1)
         delta_audio = float(self.template_size*3)
 
+        print "delta audio is: " + str(delta_audio)
+        print "delta intan is: " + str(delta_intan)
+
         # Calculate the frames/second of the audio by using the distance 
         # between template 1 and template 2 in audio and Intan space as a 
         # scaling metric. 
-        self.audio_fps =  delta_audio / delta_intan
+        #self.audio_fps =  delta_audio / delta_intan
+        self.audio_fps = 1800060
         
         # Calculate the frames/second of the video based on the frames/sec of 
         # the audio. 
