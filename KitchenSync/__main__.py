@@ -18,16 +18,26 @@ def main(audio_data,
         interval = 30):
 
     #seconds to samples
+    # Converts seconds to samples. Since default approx_offset is 0, this value 
+    # will be 0 unless the user specifies an approximate offset. 
     approx_offset = approx_offset * sample_rate
 
     #add 20% to accuracy, for safety
+    # Takes the user-defined guess of how accurately the Intan data is aligned 
+    # with the video data and multiplies it by two to be cautious. 
     accuracy = accuracy + accuracy * .2
     #approximate end of video in sample rate
+    
+    # Approximate end of video in sample rate.
     approx_end = (audio_data.size * (float(sample_rate)/audio_sample_rate)) + approx_offset
+                 
+    # Approximate start of video as defined by the user (or default of 0)             
     approx_start =  approx_offset
     template_lower_bound = audio_data.size / 2
 
     #approximate location of the middle point of the audio sample relative to the data acquisition recording 
+    # Approximate location of the middle point of the audio sample relative to 
+    # the data acquisition recording 
     center_point = (approx_start + approx_end) / 2
 
     syncer =  Synchroniser(audio_data, 
@@ -38,6 +48,12 @@ def main(audio_data,
         0, #AP added - I think this may be causing errors? 
         #int(center_point - (accuracy * sample_rate)),  Commented out 1.16.17 by AP due to errors being thrown
         int(center_point + (accuracy * sample_rate)), 
+        sample_rate,
+        audio_sample_rate,
+        int(center_point - (accuracy * sample_rate)),  
+        #int(center_point), #changed by AP 4.4.17 - Based on article I think this is the correct way to do this
+        int(center_point + (accuracy * sample_rate)),
+        #int(center_point + 2 * (accuracy * sample_rate)), #changed by AP 4.4.17 - Based on article I think this is the correct way to do this
         int(template_lower_bound))
 
     reshift = sample_rate * interval
@@ -48,6 +64,7 @@ def main(audio_data,
 
 #counts the frames of a video file, or uses the optional -vf argument
 def FrameCount(): #I believe this isn't happening, I think it's producing 0. 
+def FrameCount():
 
     if args['vf']:
         return int(args['vf'])
