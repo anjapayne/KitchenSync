@@ -64,8 +64,6 @@ or use the -vf argument to specify the total frame count of your video file.
         exit()
 
     if args['v']:
-        #####################  This code needs to be replaced
-        #####################  Will instead use ffprobe. 
         
         path_to_video = args['v']
 
@@ -215,17 +213,17 @@ Default: 0 seconds.
     
     base = OutFilePath()
     print "Saving " + base + ".index.npy and .index.txt"
-    np.save(base + ".index.npy" , vIndex[0::100])
-    np.savetxt(base + ".index.txt" , vIndex[0::100])
+    np.save(base + ".index.npy" , vIndex)
+    np.savetxt(base + ".index.txt" , vIndex)
     
     print "Saving " + base + ".audio.txt"
-    np.savetxt(base + ".audio.txt" , aud[0::100] / np.max(aud))
+    np.savetxt(base + ".audio.txt" , aud / np.max(aud))
     
     print "Saving " + base + ".audio.index.txt"
-    np.savetxt(base + ".audio.index.txt" , aud_ind[0::100])
+    np.savetxt(base + ".audio.index.txt" , aud_ind)
     
     print "Saving " + base + ".data.txt"
-    np.savetxt(base + ".data.txt" , dat[0::100] / np.max(dat))    
+    np.savetxt(base + ".data.txt" , dat / np.max(dat))    
 
     if args['test']:
         import matplotlib.pyplot as plt
